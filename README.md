@@ -54,3 +54,39 @@ xrt(n) | Takes the nth root elementwise. | False
 abs() | Takes the absolute value elementwise. | False
 round() | Rounds elementwise. | False
 
+### Linear Algebra
+Title | Description | Static?
+------------ | ------------- | -------------
+transpose() | Transposes a 2-dimensional matrix. | Both
+dot(mat) | Takes the dot product of two vectors. | Both
+innerProduct(mat) | Takes the inner product of two matricies. | Both
+trace() | Sums the diagonal of a square 2x2 matrix. | Both
+det() | Computes the determinant of a square (2x2, or 3x3) matrix. | True
+
+### Trigonometry
+Title | Description | Static?
+------------ | ------------- | -------------
+radToDeg() | Converts elements from radians to degrees. | False
+degToRad() | Converts from degrees to radians. | False
+sin() | Applies the sine function elementwise. | Both
+cos() | Applies the cosine function elementwise. | Both
+tan() | Applies the tangeant function elementwise. | Both
+asin() | Applies the inverse sine function elementwise. | Both
+acos() | Applies the inverse cosine function elementwise. | Both
+atan() | Applies the inverse tangeant function elementwise. | Both
+
+## Included Support Functions
+### Matrix Constructors
+Title | Description | Limits
+------------ | ------------- | -------------
+mat_indentity(shape) | Returns a two-dimensional square identity matrix. | 2d, square
+mat_seq(shape,begin,end) | Returns a matrix whose values are sequential from `begin` to `end`. | NONE
+mat_ones(shape) | Returns a matrix filled with ones. | NONE
+mat_fixed(shape,value) | Returns a matrix whose sole value is `value`. | NONE
+mat_rand(shape,min,max) | Returns a matrix filled with random values between `min` and `max`. | NONE
+
+### Support Functions
+Title | Description | Use
+------------ | ------------- | -------------
+sameArr(arr1,arr2) | Determines if arr1 is equivalent to arr2. | Compares matrix shapes
+isAMatrix(mat) | Returns true if provided argument is a matrix, false if not. | Debugging Purposes
