@@ -38,3 +38,19 @@ min() | Grabs a smallest value in matrix. | False
 sum() | Adds up every value in the matrix. | False
 mean() | Determines the arithmetic mean (`mat.sum().div(mat.plain.length)`). | False
 stDev() | Determines the population standard deviation (`Math.sqrt(mat.pow(2).sum()-Math.pow(mat.mean(),2))`) | False
+
+### Arithmetic
+Title | Description | Static?
+------------ | ------------- | -------------
+add(mat) | Adds elementwise. | Both
+sub(mat) | Subtracts elementwise. | Both
+mul(mat) | Multiplies elementwise. | Both
+div() | Divides elementwise. | Both
+pow(n) | Raises to the power n elementwise. | Both
+sqrt() | Takes the square root elementwise. | False
+exp() | Raises e to the power of the element(wise). | False
+ln() | Takes the natural log elementwise. | False
+xrt(n) | Takes the nth root elementwise. | False
+abs() | Takes the absolute value elementwise. | False
+round() | Rounds elementwise. | False
+
