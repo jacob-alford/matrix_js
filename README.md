@@ -18,3 +18,23 @@ resetData(array,shape) | Allows to change the content of a matrix, and/or reshap
 reshape(newShape) | Macro for resetData() passes new shape to matrix. | False
 duplicate(mat) | Returns a new matrix with identical data and structure | True
 concat(array,newShape) | **[WIP]** Concatonates two matricies | True
+
+### Get and Set
+Title | Description | Static?
+------------ | ------------- | -------------
+getValue(mat,...coordinates) | Grabs a value for `x1,x2,...,xn` from mat. | True
+setValue(mat,...coordinates) | Sets the value in mat at `x1,x2,...,xn`. | True
+
+### Display
+Title | Description | Static?
+------------ | ------------- | -------------
+print(verbose?,flat?) | Displays the matricies in the console window. | False
+
+### Reduction
+Title | Description | Static?
+------------ | ------------- | -------------
+max() | Grabs a highest value in matrix. | False
+min() | Grabs a smallest value in matrix. | False
+sum() | Adds up every value in the matrix. | False
+mean() | Determines the arithmetic mean (`mat.sum().div(mat.plain.length)`). | False
+stDev() | Determines the population standard deviation (`Math.sqrt(mat.pow(2).sum()-Math.pow(mat.mean(),2))`) | False
