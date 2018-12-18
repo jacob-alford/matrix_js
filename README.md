@@ -1,4 +1,4 @@
-# matrix_js
+# **[WIP]** matrix_js
 A simple javascript matrix library.
 
 ## Matrix Creation
