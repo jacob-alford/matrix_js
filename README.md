@@ -74,11 +74,11 @@ asin() | Applies the inverse sine function elementwise. | Both
 acos() | Applies the inverse cosine function elementwise. | Both
 atan() | Applies the inverse tangeant function elementwise. | Both
 
-## Included Support Functions
-### Matrix Constructors
+## **[WIP]** Included Support Functions
+### **[WIP]** Matrix Constructors
 Title | Description | Limits
 ------------ | ------------- | -------------
-mat_indentity(shape) | Returns a two-dimensional square identity matrix. | 2d, square
+**[WIP]** mat_indentity(shape) | Returns a two-dimensional square identity matrix. | 2d, square
 mat_seq(shape,begin,end) | Returns a matrix whose values are sequential from `begin` to `end`. | NONE
 mat_ones(shape) | Returns a matrix filled with ones. | NONE
 mat_fixed(shape,value) | Returns a matrix whose sole value is `value`. | NONE
