@@ -61,7 +61,7 @@ matMul(a,b) | Performs generic [matrix multiplication](https://en.wikipedia.org/
 dot(mat) | Takes the [dot product](https://en.wikipedia.org/wiki/Dot_product) of two vectors. | Both
 innerProduct(mat) | Takes the [inner product](https://en.wikipedia.org/wiki/Inner_product_space) of two matricies. | Both
 outerProduct(a,b) | Takes the [outer product](https://en.wikipedia.org/wiki/Outer_product) of two vectors. | True
-trace() | Sums the diagonal of a square 2x2 matrix. | Both
+trace() | Sums the diagonal of a square matrix. | Both
 det() | Computes the determinant of a square (2x2, or 3x3) matrix. | True
 
 ### Trigonometry
