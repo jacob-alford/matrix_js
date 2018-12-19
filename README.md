@@ -13,7 +13,7 @@ Does not support 1x1 matricies.
 ### Management
 Title | Description | Static?
 ------------ | ------------- | -------------
-resetData(array,shape) | Allows to change the content of a matrix, and/or reshape it. | False
+resetData(array,shape) | Allows change to the content of a matrix, and/or reshape it. | False
 reshape(newShape) | Macro for resetData() passes new shape to matrix. | False
 duplicate(mat) | Returns a new matrix with identical data and structure | True
 concat(array,newShape) | **[WIP]** Concatonates two matricies | True
