@@ -59,6 +59,7 @@ Title | Description | Static?
 transpose() | Transposes a 2-dimensional matrix. | Both
 dot(mat) | Takes the dot product of two vectors. | Both
 innerProduct(mat) | Takes the inner product of two matricies. | Both
+outerProduct(a,b) | Takes the outer product of two vectors. | True
 trace() | Sums the diagonal of a square 2x2 matrix. | Both
 det() | Computes the determinant of a square (2x2, or 3x3) matrix. | True
 
@@ -74,11 +75,11 @@ asin() | Applies the inverse sine function elementwise. | Both
 acos() | Applies the inverse cosine function elementwise. | Both
 atan() | Applies the inverse tangeant function elementwise. | Both
 
-## **[WIP]** Included Support Functions
-### **[WIP]** Matrix Constructors
+## Included Support Functions
+### Matrix Constructors
 Title | Description | Limits
 ------------ | ------------- | -------------
-**[WIP]** mat_indentity(shape) | Returns a two-dimensional square identity matrix. | 2d, square
+mat_indentity(shape) | Returns a two-dimensional square identity matrix. | 2d, square
 mat_seq(shape,begin,end) | Returns a matrix whose values are sequential from `begin` to `end`. | NONE
 mat_ones(shape) | Returns a matrix filled with ones. | NONE
 mat_fixed(shape,value) | Returns a matrix whose sole value is `value`. | NONE
