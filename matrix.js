@@ -556,11 +556,22 @@ class Matrix{
       return false;
     }
   }
-  static innerProduct(a,b){
-    if(sameArr(a.shape,b.shape)){
-        return Matrix.mul(a,b).sum();
+  static outerProduct(a,b){
+    if(a.shape.length == 2 && b.shape.length == 2 && b.shape.includes(1) && a.shape.includes(1)){
+      if(b.shape[1-b.shape.indexOf(1)] == a.shape[1-a.shape.indexOf(1)]){
+        let outArr = [];
+          for(let aM=0;aM<a.shape[1-a.shape.indexOf(1)];aM++){
+            for(let bM=0;bM<b.shape[1-b.shape.indexOf(1)];bM++){
+              outArr.push(a.plain[aM] * b.plain[bM]);
+            }
+          }
+          return new Matrix(outArr,[a.shape[1-a.shape.indexOf(1)],b.shape[1-b.shape.indexOf(1)]]);
+      }else{
+        console.error("Vectors must match in internal dimensions! (Note: I don't check for proper orientation, so make sure they match!)");
+        return false;
+      }
     }else{
-      console.error("Both matricies need to have the same shape!");
+      console.error("Both matricies must be vectors!");
       return false;
     }
   }
@@ -705,8 +716,10 @@ const mat_identity = shape => {
       }else{
         let outArr = [];
         for(let i=0;i<shape[0]*shape[1];i++){
-          //
+          if(i%(shape[0]+1)) outArr.push(1);
+          else outArr.push(0);
         }
+        return new Matrix(outArr,shape);
       }
     }
   }
