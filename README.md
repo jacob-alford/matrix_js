@@ -23,6 +23,11 @@ Title | Description | Static?
 ------------ | ------------- | -------------
 getValue(mat,...coordinates) | Grabs a value for `x1,x2,...,xn` from mat. | True
 setValue(mat,...coordinates) | Sets the value in mat at `x1,x2,...,xn`. | True
+getRow(n) | Returns the nth row of a two dimensional matrix. | False
+getCol(n) | Returns the nth column of a two dimensional matrix. | False
+getSlice(n) | Generalize getRow but for any dimension greater than two. | False
+setRow(n,vec) | Set the nth row to vector (matrix) `vec`. | False
+setCol(n,vec) | Set the nth column to vector (matrix) `vec`. | False
 
 ### Display
 Title | Description | Static?
@@ -35,6 +40,7 @@ Title | Description | Static?
 max() | Grabs a highest value in matrix. | False
 min() | Grabs a smallest value in matrix. | False
 sum() | Adds up every value in the matrix. | False
+product() | Multiplies every element in the matrix | False
 mean() | Determines the arithmetic mean (`mat.sum().div(mat.plain.length)`). | False
 stDev() | Determines the population standard deviation (`Math.sqrt(mat.pow(2).sum()-Math.pow(mat.mean(),2))`) | False
 
@@ -62,7 +68,16 @@ dot(mat) | Takes the [dot product](https://en.wikipedia.org/wiki/Dot_product) of
 innerProduct(mat) | Takes the [inner product](https://en.wikipedia.org/wiki/Inner_product_space) of two matricies. | Both
 outerProduct(a,b) | Takes the [outer product](https://en.wikipedia.org/wiki/Outer_product) of two vectors. | True
 trace() | Sums the diagonal of a square matrix. | Both
-det() | Computes the determinant of a square (2x2, or 3x3) matrix. | True
+det() | Computes the determinant of a square (n x n) matrix. | True
+gaussElim(mat,upperForm?) | Row reduces a to identity matrix (or upper form if specified), and returns an array which contains both the reduced matrix first, and a list of operations second (as a matrix). | True
+
+### Row Reduction Support
+Title | Description | Static?
+------------ | ------------- | -------------
+addRows(r1,r2,c) | Sets `r2` to `c*r1+r2`. | False
+subRows(r1,r2,c) | Sets `r2` to `c*r1-r2`. | False
+scaleRow(r1,c) | Scales `r1` by `c`. | False
+scaleRow(r1,r2) | Swaps `r1` and `r2`. | False
 
 ### Trigonometry
 Title | Description | Static?
@@ -91,3 +106,4 @@ Title | Description | Use
 ------------ | ------------- | -------------
 sameArr(arr1,arr2) | Determines if arr1 is equivalent to arr2. | Compares matrix shapes
 isAMatrix(mat) | Returns true if provided argument is a matrix, false if not. | Debugging Purposes
+flattenArr(arr,shape) | Takes an array (e.g. mat.data) with multiple dimensions, and squishes it to a flat array. | Used to update 'plain' property.
