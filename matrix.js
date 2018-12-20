@@ -238,7 +238,7 @@ class Matrix{
   }
   // --- Get and Set ---
   static getValue(a,...args){
-    if(a.shape == args.length){
+    if(a.shape.length == args.length){
       if(a.shape.length == 2) return a.data[args[0]][args[1]];
       else if(a.shape.length == 3) return a.data[args[0]][args[1]][args[2]];
       else if(a.shape.length == 4) return a.data[args[0]][args[1]][args[2]][args[3]];
@@ -291,6 +291,74 @@ class Matrix{
       return false;
     }
   }
+  getSlice(n){ // Generalize getRow but for any dimension greater than 2
+    if(this.shape.length > 2){
+      if(n < this.shape[0]){
+        let newShape = [];
+        for(let i=1;i<this.shape.length;i++) newshape.push(this.shape[i]);
+        return new Matrix(this.data[n],newShape);
+      }else{
+        console.error("Specified slice lies outside of the matrix parameters!");
+        return false;
+      }
+    }else{
+      console.error("getSlice only operates on matricies of dimension greater than 2!");
+      return false;
+    }
+
+  }
+  setRow(n,vec){ // sets row n to 'vec'
+    if(this.shape.length == 2 && !this.shape.includes(1)){
+      if(n <= this.shape[0]){
+        if(vec.shape.length == 2 && vec.shape.includes(1)){
+          if(vec.shape[1-vec.shape.indexOf(1)] == this.shape[1]){
+            let wrkArr = this.data;
+            wrkArr[n] = vec.plain;
+            this.resetData(flattenArr(wrkArr,this.shape),this.shape);
+            return this;
+          }else{
+            console.error("Vector and matrix row shape mismatch!");
+            return false;
+          }
+        }else{
+          console.error("setRow requires a vector to replace row!");
+          return false;
+        }
+      }else{
+        console.error("Specified row doesn't exist in specified matrix!");
+        return false;
+      }
+    }else{
+      console.error("setRow only works on two-dimensional matricies");
+      return false;
+    }
+  }
+  setCol(n,vec){
+    if(this.shape.length == 2 && !this.shape.includes(1)){
+      if(n <= this.shape[1]){
+        if(vec.shape.length == 2 && vec.shape.includes(1)){
+          if(vec.shape[1-vec.shape.indexOf(1)] == this.shape[0]){
+            let wrkArr = Matrix.transpose(this).data;
+            wrkArr[n] = vec.plain;
+            this.resetData(flattenArr(wrkArr,this.shape),this.shape).transpose();
+            return this;
+          }else{
+            console.error("Vector and matrix column shape mismatch!");
+            return false;
+          }
+        }else{
+          console.error("setCol requires a vector to replace column!");
+          return false;
+        }
+      }else{
+        console.error("Specified column doesn't exist in specified matrix!");
+        return false;
+      }
+    }else{
+      console.error("setCol only works on two-dimensional matricies");
+      return false;
+    }
+  }
   // --- View ---
   print(verbose = false,flat = false){
     if(verbose){
@@ -315,6 +383,9 @@ class Matrix{
   }
   sum(){
     return this.plain.reduce((a,c) => a += c);
+  }
+  product(){
+    return this.plain.reduce((a,c) => a = a*c);
   }
   mean(){
     return this.sum()/this.plain.length;
@@ -509,6 +580,84 @@ class Matrix{
       return false;
     }
   }
+  // --- Row Reduction Math ---
+  addRows(r1,r2,c=1){ // Sets row 2 to c*row 1 plus row 2
+    if(this.shape.length == 2){
+      if(r1 <= this.shape[0] && r2 <= this.shape[0]){
+        if(typeof c == "number"){
+          let newRow = Matrix.duplicate(this).getRow(r1);
+          let add = Matrix.duplicate(this).getRow(r2);
+          let comp = newRow.mul(c).add(add);
+          this.setRow(r2,comp);
+          return this;
+        }else{
+          console.error("Constant must be a scalar value!");
+          return false;
+        }
+      }else{
+        console.error("Rows lie outside of the matrix dimensions!");
+        return false;
+      }
+    }else{
+      console.error("Row scaling only works with 2d matricies!");
+      return false;
+    }
+  }
+  subRows(r1,r2,c){ // Sets row 2 to c*row 1 minus row 2
+    if(this.shape.length == 2){
+      if(r1 <= this.shape[0] && r2 <= this.shape[0]){
+        if(typeof c == "number"){
+          let newRow = Matrix.duplicate(this).getRow(r1);
+          let sub = Matrix.duplicate(this).getRow(r2);
+          let comp = newRow.mul(c).sub(sub);
+          this.setRow(r2,comp);
+          return this;
+        }else{
+          console.error("Constant must be a scalar value!");
+          return false;
+        }
+      }else{
+        console.error("Rows lie outside of the matrix dimensions!");
+        return false;
+      }
+    }else{
+      console.error("Row scaling only works with 2d matricies!");
+      return false;
+    }
+  }
+  scaleRow(r1,c){ // Scales a row by c
+    if(this.shape.length == 2){
+      if(r1 <= this.shape[0]){
+        let wrkMat = this.getRow(r1);
+        wrkMat.mul(c);
+        this.setRow(r1,wrkMat);
+        return this;
+      }else{
+        console.error("Row lies outside of the matrix dimensions!");
+        return false;
+      }
+    }else{
+      console.error("Row scaling only works with 2d matricies!");
+      return false;
+    }
+  }
+  swapRows(r1,r2){ // Swaps two rows
+    if(this.shape.length == 2){
+      if(r1 <= this.shape[0] && r2 <= this.shape[0]){
+        let grab1 = this.getRow(r1);
+        let grab2 = this.getRow(r2);
+        this.setRow(r1,grab2);
+        this.setRow(r2,grab1);
+        return this;
+      }else{
+        console.error("Rows lie outside of the matrix dimensions!");
+        return false;
+      }
+    }else{
+      console.error("Row scaling only works with 2d matricies!");
+      return false;
+    }
+  }
   // --- Linear Algebra ---
   static transpose(a){
     if(a.shape.length == 2){
@@ -518,7 +667,7 @@ class Matrix{
           outArr.push(a.data[d][c]);
         }
       }
-      return new Matrix(outArr,a.shape.reverse());
+      return new Matrix(outArr,[a.shape[1],a.shape[0]]);
     }else{
       console.error("Transpose currently only works with two-dimensional matricies!");
       return false;
@@ -641,49 +790,105 @@ class Matrix{
       return false;
     }
   }
-  static trace(a){
-    if(a.shape.length == 2){
+  static trace(a,b){
+    if(a.shape.length == 2 && sameArr(a.shape,b.shape)){
       if(a.shape[0] == a.shape[1]){
-
+        let tempMat = mat_identity(this.shape);
+        return Matrix.innerProduct(a,b);
       }else{
-        console.error("Matrix must be square!");
+        console.error("Matricies must be square!");
+        return false;
       }
     }else{
-      console.error("Matrix must be two dimensional!");
+      console.error("Matricies must be two dimensional and the same shape!");
       return false;
     }
   }
   trace(){
-    if(sameArr(a.shape,this.shape)){
-        return Matrix.mul(a,this).sum();
+    if(this.shape.length == 2){
+      if(this.shape[0] == this.shape[1]){
+        let tempMat = mat_identity(this.shape);
+        return this.innerProduct(tempMat);
+      }else{
+        console.error("Matrix must be square!");
+        return false;
+      }
     }else{
-      console.error("Both matricies need to have the same shape!");
+      console.error("Matrix must be a two-dimensional matrix!");
       return false;
     }
   }
   static det(a){
     if(a.shape.length == 2){
       if(a.shape[0] == a.shape[1]){
-        if(a.shape[0] == 2){
-          return a.data[0][0]*a.data[1][1] - a.data[0][1]*a.data[1][0];
-        }else if(a.shape[0] == 3){
-          let output = 0;
-          for(let i=0;i<3;i++){
-            if(i==0) output += a.data[0][i]*(a.data[1][1]*a.data[2][2]-a.data[2][1]*a.data[2][2]);
-            else if(i==1) output += a.data[0][i]*(a.data[1][0]*a.data[2][2]-a.data[2][0]*a.data[1][2]);
-            else output += a.data[0][i]*(a.data[1][0]*a.data[2][1]-a.data[2][0]*a.data[1][1]);
-          }
-          return output;
+        let returnProduct = Matrix.gaussElim(a)[1];
+        if(isAMatrix(returnProduct)){
+          return returnProduct.product();
         }else{
-          console.error("Determinant calculations currently only implemented for 3x3 and 2x2 matricies!");
-          return false;
+          return returnProduct.reduce((a,c) => a=a*c);
         }
       }else{
         console.error("Determinant calculations only work with square matricies!");
         return false;
       }
     }else{
-      console.error("Detminant calculations only currently work with two-dimensional matricies!");
+      console.error("Determinant calculations only currently work with two-dimensional matricies!");
+      return false;
+    }
+  }
+  static gaussElim(a,upDown=true){
+    if(a.shape.length == 2 && !a.shape.includes(1)){
+      let operationsArray = [];
+      let workingMat = Matrix.duplicate(a);
+        // --- Do the swapping --- //
+        // --- Check for zeros -- //
+        // --- If all zeros -- //
+        if(sameArr(Matrix.transpose(workingMat).data[0],arr_fixed(workingMat.shape[1],0))){ // If it's all zeros
+          console.error("First column of matrix contains all zeros!"); // Only prepared to swap the first column :-(
+          return false;
+        }else{
+          for(let r=0;r<workingMat.shape[0];r++){ // Sort by size
+            for(let c=0;c<workingMat.shape[0];c++){ // Compare every element r to every other element c
+              if(r != c){ // Don't compare it to itself
+                if(workingMat.data[r][0] > workingMat.data[c][0]){
+                  workingMat.swapRows(r,c);
+                  operationsArray.push(-1);
+                }
+              }
+            }
+          }
+        }
+        // --- Do the reduction --- //
+        // Run for every column of matrix but stop when it hits the number of rows (allows for augments for inverse and determinant)
+        let checkLength = (workingMat.shape[1]>workingMat.shape[0])?workingMat.shape[0]:workingMat.shape[1]; // Allow for augments
+        for(let r=0;r<checkLength;r++){ // Note each iteration will try and make the c,c position = 1, and below zeros.
+          if(workingMat.data[r][r] != 1){ // Make the number = 1 (if it isn't already)
+            operationsArray.push(workingMat.data[r][r]);
+            workingMat.scaleRow(r,1/workingMat.data[r][r]);
+          }
+          for(let b=r+1;b<workingMat.shape[0];b++){ // Make the lower part zero
+            if(workingMat.data[b][r] != 0){
+              workingMat.addRows(r,b,-1*workingMat.data[b][r]);
+            }
+          }
+        }
+        if(upDown){
+          for(let r=1;r<checkLength;r++){ // Note each iteration will try and make the c,c position = 1, and above zeros.
+            for(let a=r-1;a>=0;a--){ // Make the upper part zero (representing the rows)
+              if(workingMat.data[a][r] != 0){
+                workingMat.addRows(r,a,-1*workingMat.data[a][r]);
+              }
+            }
+          }
+        }
+        if(operationsArray.length > 1){
+          return [workingMat,new Matrix(operationsArray)];
+        }else{
+          console.log("Note: gaussian elimination didn't require any more than one swap or scale!");
+          return [workingMat,operationsArray];
+        }
+    }else{
+      console.error("Gaussian elimination only works on two-dimensional matricies!");
       return false;
     }
   }
@@ -762,9 +967,68 @@ const sameArr = (a,b) => {
   for(let c=0;c<a.length;c++) if(a[c] != b[c]) return false;
   return true;
 }
-const isAMatrix = (a) => {
+const isAMatrix = a => {
   if(!(a.shape === undefined) && !(a.data === undefined) && !(a.plain === undefined)) return true;
   else return false;
+}
+const flattenArr = (arr,shape) => {
+  let outArr = [];
+    if(shape.length == 1){
+      for(let i1=0;i1<shape[0];i1++){
+        outArr.push(arr[i1]);
+      }
+    }else if(shape.length == 2){
+      for(let i1=0;i1<shape[0];i1++){
+        for(let i2=0;i2<shape[1];i2++){
+          outArr.push(arr[i1][i2]);
+        }
+      }
+    }else if(shape.length == 3){
+      for(let i1=0;i1<shape[0];i1++){
+        for(let i2=0;i2<shape[1];i2++){
+          for(let i3=0;i3<shape[2];i3++){
+            outArr.push(arr[i1][i2][i3]);
+          }
+        }
+      }
+    }else if(shape.length == 4){
+      for(let i1=0;i1<shape[0];i1++){
+        for(let i2=0;i2<shape[1];i2++){
+          for(let i3=0;i3<shape[2];i3++){
+            for(let i4=0;i4<shape[3];i4++){
+              outArr.push(arr[i1][i2][i3][i4]);
+            }
+          }
+        }
+      }
+    }else if(shape.length == 5){
+      for(let i1=0;i1<shape[0];i1++){
+        for(let i2=0;i2<shape[1];i2++){
+          for(let i3=0;i3<shape[2];i3++){
+            for(let i4=0;i4<shape[3];i4++){
+              for(let i5=0;i5<shape[4];i5++){
+                outArr.push(arr[i1][i2][i3][i4][i5]);
+              }
+            }
+          }
+        }
+      }
+    }else if(shape.length == 6){
+      for(let i1=0;i1<shape[0];i1++){
+        for(let i2=0;i2<shape[1];i2++){
+          for(let i3=0;i3<shape[2];i3++){
+            for(let i4=0;i4<shape[3];i4++){
+              for(let i5=0;i5<shape[4];i5++){
+                for(let i6=0;i6<shape[5];i6++){
+                  outArr.push(arr[i1][i2][i3][i4][i5][i6]);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return outArr;
 }
 
 const mat_identity = shape => {
@@ -782,7 +1046,7 @@ const mat_identity = shape => {
       }else{
         let outArr = [];
         for(let i=0;i<shape[0]*shape[1];i++){
-          if(i%(shape[0]+1)) outArr.push(1);
+          if(i%(shape[0]+1) == 0) outArr.push(1);
           else outArr.push(0);
         }
         return new Matrix(outArr,shape);
