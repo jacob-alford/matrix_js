@@ -16,6 +16,7 @@ resetData(array,shape) | Allows change to the content of a matrix, and/or reshap
 reshape(newShape) | Macro for resetData() passes new shape to matrix. | False
 duplicate(mat) | Returns a new matrix with identical data and structure | True
 concat(array,newShape) | **[WIP]** Concatonates two matricies | True
+cap(num) | Ensures no value exceeds num in the matrix | False
 
 ### Get and Set
 Title | Description | Static?
