@@ -1,5 +1,5 @@
 # **[WIP]** matrix_js
-A simple javascript matrix library.
+A simple javascript matrix (and vector) library.
 
 ## Matrix Creation
 ```
