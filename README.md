@@ -122,4 +122,4 @@ cross(a,b) | Takes the cross product of two vectors | True
 normalize() | Turns vector into a unit vector | False
 setLen(len) | Sets the length of the vector in the same direction. | False
 angleBetween(a,b,deg=false) | Finds the angle between two vectors. | True
-orthoProject(a,...bases) | Projects a onto subspace spanned by (vectors) ...bases. | True
+orthoProject(a,...bases) | Orthographically projects a onto subspace spanned by (vectors) ...bases. | True
