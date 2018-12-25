@@ -1046,6 +1046,13 @@ class Vector extends Matrix{
     if(degrees) return Math.acos(Vector.dot(a,b)/(a.norm()*b.norm())) * (180/Math.PI);
     else return Math.acos(Vector.dot(a,b)/(a.norm()*b.norm()));
   }
+  static orthoProject(vec,...args){
+    let wrkVec = mat_fixed(args[0].shape,0);
+    args.forEach((c,i) => {
+      wrkVec.add(c.mul(Matrix.innerProduct(vec,c)/(Math.pow(c.norm(),2))));
+    });
+    return new Vector(wrkVec.plain);
+  }
 }
 const sameArr = (a,b) => {
   if(a.length != b.length) return false;
