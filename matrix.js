@@ -901,7 +901,7 @@ class Matrix{
         for(let r=0;r<checkLength;r++){ // Note each iteration will try and make the c,c position = 1, and below zeros.
           if(workingMat.data[r][r] != 1){ // Make the number = 1 (if it isn't already)
             operationsArray.push(workingMat.data[r][r]);
-            workingMat.scaleRow(r,1/workingMat.data[r][r]);
+            if(workingMat.data[r][r] != 0) workingMat.scaleRow(r,1/workingMat.data[r][r]);
           }
           for(let b=r+1;b<workingMat.shape[0];b++){ // Make the lower part zero
             if(workingMat.data[b][r] != 0){
