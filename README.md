@@ -79,7 +79,7 @@ round() | Rounds elementwise. | False
 Title | Description | Static?
 ------------ | ------------- | -------------
 transpose() | Transposes a 2-dimensional matrix. | Both
-matMul(a,b) | Performs generic [matrix multiplication](https://en.wikipedia.org/wiki/Matrix_multiplication) on two matricies or a matrix and a vector. | True
+**[WIP]** matMul(a,b) | Performs generic [matrix multiplication](https://en.wikipedia.org/wiki/Matrix_multiplication) on two matricies or a matrix and a vector. | True
 vecTransform(mat,vec) | Transforms a vector into a different basis based on mat. | True
 dot(mat) | Takes the [dot product](https://en.wikipedia.org/wiki/Dot_product) of two vectors. | True
 innerProduct(mat) | Takes the [inner product](https://en.wikipedia.org/wiki/Inner_product_space) of two matricies. | Both
