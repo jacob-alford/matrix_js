@@ -15,7 +15,13 @@ Title | Description | Static?
 resetData(array,shape) | Allows change to the content of a matrix, and/or reshape it. | False
 reshape(newShape) | Macro for resetData() passes new shape to matrix. | False
 duplicate(mat) | Returns a new matrix with identical data and structure | True
-concat(array,newShape) | **[WIP]** Concatonates two matricies | True
+matFromVecs(...args) | Creates a matrix from row or column vectors. | True
+colToVectors() | Returns an array of vectors which are the columns of the matrix | False
+rowsToVectors() | Returns an array of vectors which are the rows the matrix | False
+matFromMatsByCol() | Concatonates two matricies, column-based. | True
+matFromMatsByRow() | Concatonates two matricies, row-based. | True
+splitByCol(low,high?) | Returns a new matrix which omits outside of the inclusive (by index) column range low-high | False
+splitByRow(low,high?) | Returns a new matrix which omits outside of the inclusive (by index) row range low-high | False
 cap(num) | Ensures no value exceeds num in the matrix | False
 
 ### Get and Set
@@ -41,8 +47,18 @@ max() | Grabs a highest value in matrix. | False
 min() | Grabs a smallest value in matrix. | False
 sum() | Adds up every value in the matrix. | False
 product() | Multiplies every element in the matrix | False
+
+### Statistics
+Title | Description | Static?
+------------ | ------------- | -------------
 mean() | Determines the arithmetic mean (`mat.sum().div(mat.plain.length)`). | False
-stDev() | Determines the population standard deviation (`Math.sqrt(mat.pow(2).sum()-Math.pow(mat.mean(),2))`) | False
+expVal(a,weights?,probabilities?) | Finds the expected value of a set of data. (`return Matrix.mul(a,weights).sum()`) | True
+var(a,weights?,probabilities) |  Finds the population variance of a set of data. (`Matrix.expVal(Matrix.pow(a,2),weights,probabilities) - Math.pow(Matrix.expVal(a,weights),2`)
+stDev(a,weights?,probabilities?) | Determines the population standard deviation  (`Math.sqrt(Matrix.var(a,weights,probabilities))`) | True
+cov(a,b) | Determines the covariance of two datasets. (`Matrix.mul(a,b).sum()-a.sum()*b.sum()/a.plain.length`) | True
+corr(a,b) | Determines the correlation coefficient of two datasets. | True
+linReg(a,b,fn?) | Runs a linear regression on two data sets, returns a function object and a coefficient array | True
+reg(a,b,degree?,fn?) | Runs a polynomial regression of degree 'n,' returns a coefficient array. | True
 
 ### Arithmetic
 Title | Description | Static?
@@ -71,6 +87,7 @@ outerProduct(a,b) | Takes the [outer product](https://en.wikipedia.org/wiki/Oute
 trace() | Sums the diagonal of a square matrix. | Both
 det() | Computes the determinant of a square (n x n) matrix. | True
 gaussElim(mat,upperForm?) | Row reduces a to identity matrix (or upper form if specified), and returns an array which contains both the reduced matrix first, and a list of operations second (as a matrix). | True
+invert(a) | Inverts a matrix if it is invertible | True
 
 ### Row Reduction Support
 Title | Description | Static?
