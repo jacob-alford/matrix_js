@@ -1232,6 +1232,10 @@ const isAMatrix = a => {
   if(!(a.shape === undefined) && !(a.data === undefined) && !(a.plain === undefined)) return true;
   else return false;
 }
+const isAVector = a => {
+  if(typeof a.dot === "undefined") return false;
+  else return true;
+}
 const flattenArr = (arr,shape) => {
   let outArr = [];
     if(shape.length == 1){

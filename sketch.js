@@ -1,6 +1,6 @@
 // --- Global Variables ---
+let currentMat = mat_fixed([3,4],0);
 let matStack = [];
-let currentMat;
 // --- Classes ---
 const Controller = {
 
@@ -18,24 +18,88 @@ const control = fn => {
     if(Controller[fn].requires.includes("s")){
       if($("#scalarInput").val() != ""){
         let sInput = Number($("#scalarInput").val());
-        Controller[fn].fn(sInput);
+        if(Controller[fn].requires.includes("v")){
+          if(isAVector(matStack[0]) && isAVector(matStack[1])){
+            if(Controller[fn].requires.includes("d")){
+              if(sameArr(matStack[0].shape,matStack[1].shape)){
+                Controller[fn].fn(sInput);
+              }else{
+                display("The two vectors must have the same shape!");
+              }
+            }else{
+              Controller[fn].fn(sInput);
+            }
+          }else{
+            display(`${fn} requires two vectors!`);
+          }
+        }else{
+          if(Controller[fn].requires.includes("d")){
+            if(sameArr(matStack[0].shape,matStack[1].shape)){
+              Controller[fn].fn(sInput);
+            }else{
+              display("The two matricies must have the same shape!");
+            }
+          }else{
+            Controller[fn].fn(sInput);
+          }
+        }
       }else{
         display(`${fn} requires a scalar value specified!`);
       }
     }else{
-      Controller[fn].fn();
+      if(Controller[fn].requires.includes("v")){
+        if(isAVector(matStack[0]) && isAVector(matStack[1])){
+          if(Controller[fn].requires.includes("d")){
+            if(sameArr(matStack[0].shape,matStack[1].shape)){
+              Controller[fn].fn();
+            }else{
+              display("The two vectors must have the same shape!");
+            }
+          }else{
+            Controller[fn].fn();
+          }
+        }else{
+          display(`${fn} requires two vectors!`);
+        }
+      }else{
+        if(Controller[fn].requires.includes("d")){
+          if(sameArr(matStack[0].shape,matStack[1].shape)){
+            Controller[fn].fn();
+          }else{
+            display("The two matricies must have the same shape!");
+          }
+        }else{
+          Controller[fn].fn();
+        }
+      }
     }
   }else if(matStack.length == 1){
     if(!Controller[fn].requires.includes("2")){
       if(Controller[fn].requires.includes("s")){
         if($("#scalarInput").val() != ""){
           let sInput = Number($("#scalarInput").val());
-          Controller[fn].fn(sInput);
+          if(Controller[fn].requires.includes("v")){
+            if(isAVector(matStack[0])){
+              Controller[fn].fn(sInput);
+            }else{
+              display(`${fn} requires a vector!`);
+            }
+          }else{
+            Controller[fn].fn(sInput);
+          }
         }else{
           display(`${fn} requires a scalar value specified!`);
         }
       }else{
-        Controller[fn].fn();
+        if(Controller[fn].requires.includes("v")){
+          if(isAVector(matStack[0])){
+            Controller[fn].fn();
+          }else{
+            display(`${fn} requires a vector!`);
+          }
+        }else{
+          Controller[fn].fn();
+        }
       }
     }else{
       display(`${fn} requires at least two matricies present!`);
@@ -76,7 +140,7 @@ const displayStack = () => {
 Controller["add"] = new Func("",() => {
   if($("#scalarInput").val() != ""){
     let tempMat = mat_fixed(matStack[0].shape,Number($("#scalarInput").val()));
-    if(Matrix.add(tempMat,matStack[0])){
+    if(Matrix.add(tempMat,matStack[0]) !== false){
       matStack[0].add(tempMat);
       displayStack();
     }else{
@@ -93,9 +157,338 @@ Controller["add"] = new Func("",() => {
         display("Unable to perform the operation!");
       }
     }else{
-      display("Add requires at least two matricies or a scalar input!");
+      display("Addition requires at least two matricies or a scalar input!");
     }
   }
+});
+Controller["sub"] = new Func("",() => {
+  if($("#scalarInput").val() != ""){
+    let tempMat = mat_fixed(matStack[0].shape,Number($("#scalarInput").val()));
+    if(Matrix.sub(tempMat,matStack[0]) !== false){
+      matStack[0].sub(tempMat);
+      displayStack();
+    }else{
+      display("Unable to perform operation!");
+    }
+  }else{
+    if(matStack.length == 2){
+      let tempMat = Matrix.sub(matStack[0],matStack[1]);
+      if(tempMat){
+        matStack = [];
+        matStack.push(tempMat);
+        displayStack();
+      }else{
+        display("Unable to perform the operation!");
+      }
+    }else{
+      display("Subtract requires at least two matricies or a scalar input!");
+    }
+  }
+});
+Controller["mul"] = new Func("",() => {
+  if($("#scalarInput").val() != ""){
+    let tempMat = mat_fixed(matStack[0].shape,Number($("#scalarInput").val()));
+    if(Matrix.mul(tempMat,matStack[0]) !== false){
+      matStack[0].mul(tempMat);
+      displayStack();
+    }else{
+      display("Unable to perform operation!");
+    }
+  }else{
+    if(matStack.length == 2){
+      let tempMat = Matrix.mul(matStack[0],matStack[1]);
+      if(tempMat){
+        matStack = [];
+        matStack.push(tempMat);
+        displayStack();
+      }else{
+        display("Unable to perform the operation!");
+      }
+    }else{
+      display("Multiplication requires at least two matricies or a scalar input!");
+    }
+  }
+});
+Controller["div"] = new Func("",() => {
+  if($("#scalarInput").val() != ""){
+    let tempMat = mat_fixed(matStack[0].shape,Number($("#scalarInput").val()));
+    if(Matrix.div(tempMat,matStack[0]) !== false){
+      matStack[0].div(tempMat);
+      displayStack();
+    }else{
+      display("Unable to perform operation!");
+    }
+  }else{
+    if(matStack.length == 2){
+      let tempMat = Matrix.div(matStack[0],matStack[1]);
+      if(tempMat){
+        matStack = [];
+        matStack.push(tempMat);
+        displayStack();
+      }else{
+        display("Unable to perform the operation!");
+      }
+    }else{
+      display("Divide requires at least two matricies or a scalar input!");
+    }
+  }
+});
+Controller["pow"] = new Func("",() => {
+  if($("#scalarInput").val() != ""){
+    let scalar = Number($("#scalarInput").val());
+    if(Matrix.pow(matStack[0],scalar) !== false){
+      matStack[0].pow(scalar);
+      displayStack();
+    }else{
+      display("Unable to perform operation!");
+    }
+  }else{
+    display("Power requires a scalar input!");
+  }
+});
+Controller["sqrt"] = new Func("",() => {
+      matStack[0].sqrt();
+      displayStack();
+});
+Controller["exp"] = new Func("",() => {
+      matStack[0].exp();
+      displayStack();
+});
+Controller["ln"] = new Func("",() => {
+      matStack[0].ln();
+      displayStack();
+});
+Controller["xrt"] = new Func("",() => {
+  if($("#scalarInput").val() != ""){
+    let scalar = Number($("#scalarInput").val());
+    matStack[0].xrt(scalar);
+    displayStack();
+  }else{
+    display("Xth-Root requires a scalar input!");
+  }
+});
+Controller["abs"] = new Func("",() => {
+      matStack[0].abs();
+      displayStack();
+});
+Controller["round"] = new Func("",() => {
+      matStack[0].round();
+      displayStack();
+});
+// Trigonometry
+Controller["sin"] = new Func("",() => {
+      matStack[0].sin();
+      displayStack();
+});
+Controller["cos"] = new Func("",() => {
+      matStack[0].cos();
+      displayStack();
+});
+Controller["tan"] = new Func("",() => {
+      matStack[0].tan();
+      displayStack();
+});
+Controller["asin"] = new Func("",() => {
+      matStack[0].asin();
+      displayStack();
+});
+Controller["acos"] = new Func("",() => {
+      matStack[0].acos();
+      displayStack();
+});
+Controller["atan"] = new Func("",() => {
+      matStack[0].atan();
+      displayStack();
+});
+Controller["rad2Deg"] = new Func("",() => {
+      matStack[0].radToDeg();
+      displayStack();
+});
+Controller["deg2Rad"] = new Func("",() => {
+      matStack[0].degToRad();
+      displayStack();
+});
+// Reduction
+Controller["max"] = new Func("",() => {
+      let output = matStack[0].max();
+      display(output);
+});
+Controller["min"] = new Func("",() => {
+      let output = matStack[0].min();
+      display(output);
+});
+Controller["sum"] = new Func("",() => {
+      let output = matStack[0].sum();
+      display(output);
+});
+Controller["product"] = new Func("",() => {
+      let output = matStack[0].product();
+      display(output);
+});
+// Statistics
+Controller["mean"] = new Func("",() => {
+      matStack[0].mean();
+      displayStack();
+});
+Controller["expVal"] = new Func("2d",() => {
+    if(Matrix.expVal(matStack[0],matStack[1]) !== false){
+      let temp = Matrix.expVal(matStack[0],matStack[1]);
+      display(temp);
+    }else{
+      display("Unable to perform operation!");
+    }
+});
+Controller["var"] = new Func("2d",() => {
+    if(Matrix.var(matStack[0],matStack[1]) !== false){
+      let temp = Matrix.var(matStack[0],matStack[1]);
+      display(temp);
+    }else{
+      display("Unable to perform operation!");
+    }
+});
+Controller["stDev"] = new Func("2d",() => {
+    if(Matrix.stDev(matStack[0],matStack[1]) !== false){
+      let temp = Matrix.var(matStack[0],matStack[1]);
+      display(temp);
+    }else{
+      display("Unable to perform operation!");
+    }
+});
+Controller["cov"] = new Func("2d",() => {
+  let temp = Matrix.cov(matStack[0],matStack[1]);
+  display(temp);
+});
+Controller["corr"] = new Func("2d",() => {
+  let temp = Matrix.corr(matStack[0],matStack[1]);
+  display(temp);
+});
+Controller["linReg"] = new Func("2d",() => {
+  let temp = Matrix.linReg(matStack[0],matStack[1]);
+  display(`y=${temp[0].toFixed(3)}+${temp[1].toFixed(3)}x`);
+});
+Controller["reg"] = new Func("2sd",val => {
+  let temp = Matrix.reg(matStack[0],matStack[1],val);
+  let outString = `y=${temp[0].toFixed(3)}`;
+  temp.forEach((c,i) => {
+    if(i>0) outString += `${(temp[i]<0)?"-":"+"}${Math.abs(temp[i].toFixed(3))}x^${i}`;
+  });
+  display(outString);
+});
+// Vectors
+Controller["dot"] = new Func("2vd",() => {
+      let output = matStack[0].dot(matStack[1]);
+      display(output);
+});
+Controller["norm"] = new Func("v",() => {
+      let output = matStack[0].norm();
+      display(output);
+});
+Controller["cross"] = new Func("2v",() => {
+      let output = Vector.cross(matStack[0],matStack[1]);
+      if(matStack.shape.includes(3) && matStack.shape.includes(3)){
+        if(output !== 'false'){
+          display(output);
+        }else{
+          display('There was an error!');
+        }
+      }else{
+        display("Vectors must be three dimensional!");
+      }
+});
+Controller["normalize"] = new Func("v",() => {
+          matStack[0].normalize();
+          displayStack();
+});
+Controller["setLen"] = new Func("sv",val => {
+          matStack[0].setLen(val);
+          displayStack();
+});
+Controller["angleBetween"] = new Func("2vd",val => {
+          let temp = Vector.angleBetween(matStack[0],matStack[1]);
+          display(temp);
+});
+Controller["outerProduct"] = new Func("2v",() => {
+      let output = Matrix.outerProduct(matStack[0],matStack[1]);
+        if(output !== false){
+          matStack = [];
+          matStack.push(output);
+          displayStack();
+        }else{
+          display('There was an error!');
+        }
+});
+// Linear Algebra
+Controller["transpose"] = new Func("",() => {
+      let output = Matrix.transpose(matStack[0]);
+        if(output !== false){
+          matStack[0].transpose();
+          displayStack();
+        }else{
+          display('There was an error!');
+        }
+});
+Controller["matMul"] = new Func("2",() => {
+      let output = Matrix.matMul(matStack[0],matStack[1]);
+        if(output !== false){
+          matStack = [];
+          matStack.push(output);
+          displayStack();
+        }else{
+          display('There was an error!');
+        }
+});
+Controller["innerProduct"] = new Func("2d",() => {
+      let output = Matrix.innerProduct(matStack[0],matStack[1]);
+        if(output !== false){
+          display(output);
+        }else{
+          display('There was an error!');
+        }
+});
+Controller["trace"] = new Func("",() => {
+      let output = matStack[0].trace();
+        if(output !== false){
+          display(output);
+        }else{
+          display('There was an error, check that the matrix is square!');
+        }
+});
+Controller["det"] = new Func("",() => {
+      let output = Matrix.det(matStack[0]);
+        if(output !== false){
+          display(output);
+        }else{
+          display('There was an error, check that the matrix is square!');
+        }
+});
+Controller["rowRed"] = new Func("",() => {
+      let output = Matrix.gaussElim(matStack[0])[0];
+        if(output !== false){
+          matStack = [];
+          matStack.push(output);
+          displayStack();
+        }else{
+          display('There was an error!');
+        }
+});
+Controller["invert"] = new Func("",() => {
+      let det = Matrix.det(matStack[0]);
+      if(det !== false){
+        if(det != 0){
+          let output = Matrix.invert(matStack[0]);
+          if(output !== false){
+            matStack = [];
+            matStack.push(output);
+            displayStack();
+          }else{
+            display('There was an error!');
+          }
+        }else{
+          display("Matrix is not invertible!");
+        }
+      }else{
+        display("Matrix must be square!");
+      }
 });
 
 $(document).ready(function(){
@@ -114,6 +507,10 @@ $(document).ready(function(){
           $("#display").css("color","red");
           $("#display").html("Shape must be square for identity matrix!");
         }
+      }else if($("#tempSel").val() == "Random"){
+
+      }else if($("#tempSel").val() == "Sequential"){
+
       }
     }
     currentMat = tempMat;
@@ -133,7 +530,19 @@ $(document).ready(function(){
           temp.push(Number($(`#tValue_${i}-${j}`).val()));
         }
       }
-      let tempMat = new Matrix(temp,currentMat.shape);
+      let tempMat;
+      let str;
+      if(currentMat.shape.includes(1)){
+
+        if(currentMat.shape[0] == 1){
+          str = 'row';
+        }else{
+          str = 'col';
+        }
+        tempMat = new Vector(temp,str);
+      }else{
+        tempMat = new Matrix(temp,currentMat.shape);
+      }
       matStack.unshift(tempMat);
       currentMat = tempMat;
       displayStack(matStack);
