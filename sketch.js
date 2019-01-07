@@ -107,14 +107,14 @@ const control = fn => {
   }else{
     display("You need at least one matrix in the stack!","red");
   }
+  $("#scalarInput").val("");
 }
 const display = (str,color="black") => {
   $("#display").css("color","white");
   $("#display").html(str);
 }
 const resetDisplay = () => {
-  $("#display").css("color","white");
-  $("#display").html("0");
+  display(0);
 }
 const displayStack = () => {
   $("#matDisplay").html("");
@@ -327,8 +327,8 @@ Controller["product"] = new Func("",() => {
 });
 // Statistics
 Controller["mean"] = new Func("",() => {
-      matStack[0].mean();
-      displayStack();
+      let out = matStack[0].mean();
+      display(out);
 });
 Controller["expVal"] = new Func("2d",() => {
     if(Matrix.expVal(matStack[0],matStack[1]) !== false){
@@ -497,21 +497,55 @@ $(document).ready(function(){
     let shape = [Number($("#rows").val()),Number($("#cols").val())];
     let tempMat;
     if($("#tempSel").val() != ""){
-      if($("#tempSel").val() == "Fixed") tempMat = mat_fixed(shape,Number($("#fixedInput").val()));
-      else if($("#tempSel").val() == "Identity"){
+      if($("#tempSel").val() == "Fixed"){
+        if($("#fixedInput").val() != ""){
+          let number = Number($("#fixedInput").val().split(",")[0]);
+          tempMat = mat_fixed(shape,number);
+        }else{
+          display("Fixed requires a value to be specified in box!");
+          return false;
+        }
+      }else if($("#tempSel").val() == "Identity"){
         if(shape[0] == shape[1]){
           tempMat = mat_identity(shape);
           $("#display").css("color","black");
           $("#display").html("matCalc_js");
         }else{
-          $("#display").css("color","red");
-          $("#display").html("Shape must be square for identity matrix!");
+          display("Shape must be square for identity matrix!");
+          return false;
         }
-      }else if($("#tempSel").val() == "Random"){
-
-      }else if($("#tempSel").val() == "Sequential"){
-
+      }else if($("#tempSel").val() == "Random (specify range: 'min,max')"){
+        if($("#fixedInput").val().includes(",")){
+          let range = [$("#fixedInput").val().split(",")[0],$("#fixedInput").val().split(",")[1]];
+          tempMat = mat_rand(shape,Number(range[0]),Number(range[1]));
+        }else{
+          display("Random requires min and max specified in box formatted as follows: 'min,max'.");
+          return false;
+        }
+      }else if($("#tempSel").val() == "Random Integer (specify range: 'min,max')"){
+        if($("#fixedInput").val().includes(",")){
+          let range = [$("#fixedInput").val().split(",")[0],$("#fixedInput").val().split(",")[1]];
+          tempMat = mat_rand(shape,Number(range[0]),Number(range[1]),true);
+        }else{
+          display("Random requires min and max specified in box formatted as follows: 'min,max'.");
+          return false;
+        }
+      }else if($("#tempSel").val() == "Sequential (specify range: 'start,stop') (Note:values are inclusive)"){
+        if($("#fixedInput").val().includes(",")){
+          let range = [$("#fixedInput").val().split(",")[0],$("#fixedInput").val().split(",")[1]];
+          if(shape[0]*shape[1] == (Number(range[1])+1)-Number(range[0])){
+            tempMat = mat_seq(shape,Number(range[0]),Number(range[1])+1);
+          }else{
+            display("Sequential requires the range of numbers to match the given matrix shape!");
+            return false;
+          }
+        }else{
+          display("Sequential requires begin and end specified in box formatted as follows: 'begin,end'.");
+          return false;
+        }
       }
+    }else{
+
     }
     currentMat = tempMat;
     for(let i=0;i<Number($("#rows").val());i++){
@@ -527,7 +561,11 @@ $(document).ready(function(){
       let temp = [];
       for(let i=0;i<currentMat.shape[0];i++){
         for(let j=0;j<currentMat.shape[1];j++){
-          temp.push(Number($(`#tValue_${i}-${j}`).val()));
+          if($(`#tValue_${i}-${j}`).val() != "" || !($(`#tValue_${i}-${j}`).val() === undefined)){
+            temp.push(Number($(`#tValue_${i}-${j}`).val()));
+          }else{
+            temp.push(0);
+          }
         }
       }
       let tempMat;
@@ -541,7 +579,11 @@ $(document).ready(function(){
         }
         tempMat = new Vector(temp,str);
       }else{
-        tempMat = new Matrix(temp,currentMat.shape);
+        let shape = [Number($("#rows").val()),Number($("#cols").val())];
+        if(shape[0] != currentMat.shape[0] || shape[1] != currentMat.shape[1]){
+         shape = currentMat.shape; 
+        }
+        tempMat = new Matrix(temp,shape);
       }
       matStack.unshift(tempMat);
       currentMat = tempMat;
@@ -569,9 +611,10 @@ $(document).ready(function(){
       for(let i=0;i<Number($("#rows").val());i++){
         $("#setBody").append(`<tr id="row_${i}">`);
         for(let j=0;j<Number($("#cols").val());j++){
-          $(`#row_${i}`).append(`<td><input type="number" class="form-control"></input></td>`);
+          $(`#row_${i}`).append(`<td><input type="number" class="form-control" value="0" id="tValue_${i}-${j}"></input></td>`);
         }
       }
+      currentMat = mat_fixed([Number($("#rows").val()),Number($("#cols").val())],0);
   });
   $("#resetStack").click(function(){
       resetDisplay();
@@ -579,9 +622,10 @@ $(document).ready(function(){
       for(let i=0;i<Number($("#rows").val());i++){
         $("#setBody").append(`<tr id="row_${i}">`);
         for(let j=0;j<Number($("#cols").val());j++){
-          $(`#row_${i}`).append(`<td><input type="number" class="form-control"></input></td>`);
+          $(`#row_${i}`).append(`<td><input type="number" class="form-control" value="0" id="tValue_${i}-${j}"></input></td>`);
         }
       }
+      currentMat = mat_fixed([Number($("#rows").val()),Number($("#cols").val())],0);
       matStack = [];
       displayStack();
   });

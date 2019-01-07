@@ -1342,9 +1342,13 @@ const arr_fixed = (n,val) => {
 }
 const mat_fixed = (shape,val) => new Matrix(arr_fixed(shape.reduce((a,c) => a=a*c),val),shape);
 
-const arr_rand = (n,min=0,max=1) => {
+const arr_rand = (n,min=0,max=1,fixed = false) => {
   let outputArr = [];
-  for(let c=0;c<n;c++) outputArr.push(Math.random()*max + min);
+  if(fixed){
+    for(let c=0;c<n;c++) outputArr.push(Math.round(Math.random()*max + min));
+  }else{
+    for(let c=0;c<n;c++) outputArr.push(Math.random()*max + min);
+  }
   return outputArr;
 }
-const mat_rand = (shape,min=0,max=1) => new Matrix(arr_rand(shape.reduce((a,c) => a=a*c),min,max),shape);
+const mat_rand = (shape,min=0,max=1,fixed=false) => new Matrix(arr_rand(shape.reduce((a,c) => a=a*c),min,max,fixed),shape);

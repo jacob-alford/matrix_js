@@ -16,13 +16,13 @@
           <div class="col">
             <div class="form-group">
               <label for="rows">Rows</label>
-              <input type="number" class="form-control" id="rows" value="3">
+              <input type="number" class="form-control" id="rows" min="1" value="3">
             </div>
           </div>
           <div class="col">
             <div class="form-group">
                <label for="cols">Columns</label>
-               <input type="number" class="form-control" id="cols" value="4">
+               <input type="number" class="form-control" id="cols" min="1" value="4">
            </div>
           </div>
         </div>
@@ -33,11 +33,12 @@
              <select class="form-control" id="tempSel">
                <option selected="selected">Fixed</option>
                <option>Identity</option>
-               <option>Random</option>
-               <option>Sequential</option>
+               <option>Random (specify range: 'min,max')</option>
+               <option>Random Integer (specify range: 'min,max')</option>
+               <option>Sequential (specify range: 'start,stop') (Note:values are inclusive)</option>
              </select>
             </div>
-            <input type="number" class="form-control" id="fixedInput" value="0"></input>
+            <input type="text" class="custom-control form-control" id="fixedInput"></input>
             <button class="btn btn-dark mt-3" id="setShape">Set</button>
           </div>
         </div>
@@ -74,8 +75,8 @@
     </div>
     <div class="container-fluid" style="background-color:#67C50A">
       <h2 class="display-2 text-left">View</h2>
-      <div class="container">
-        <div class="row" id="matDisplay">
+      <div class="container-fluid">
+        <div class="row" id="matDisplay" style="overflow:scroll;overflow-y:hidden">
         </div>
       </div>
     </div>
@@ -104,7 +105,7 @@
           <button class="btn btn-warning m-1 border-success" onclick="control('sub')">Subtract</button>
           <button class="btn btn-warning m-1 border-success" onclick="control('mul')">Multiply</button>
           <button class="btn btn-warning m-1 border-success" onclick="control('div')">Divide</button>
-          <button class="btn btn-warning m-1 border-success" onclick="control('pow')">Power</button>
+          <button class="btn btn-light m-1 border-sucess" onclick="control('pow')">Power</button>
           <button class="btn btn-secondary m-1 border-success" onclick="control('sqrt')">SquareRoot</button>
           <button class="btn btn-secondary m-1 border-success" onclick="control('exp')">exp</button>
           <button class="btn btn-secondary m-1 border-success" onclick="control('ln')">Natural Log</button>
