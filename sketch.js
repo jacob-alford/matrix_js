@@ -348,7 +348,7 @@ Controller["var"] = new Func("2d",() => {
 });
 Controller["stDev"] = new Func("2d",() => {
     if(Matrix.stDev(matStack[0],matStack[1]) !== false){
-      let temp = Matrix.var(matStack[0],matStack[1]);
+      let temp = Matrix.stDev(matStack[0],matStack[1]);
       display(temp);
     }else{
       display("Unable to perform operation!");
