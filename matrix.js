@@ -555,7 +555,7 @@ class Matrix{
     else if(fn == "both") return [[b0,b1],x => x*b1+b0];
     else return [b0,b1];
   }
-  static reg(a,b,degree=1,fn=false){
+  static reg(a,b,degree=1){
     if(sameArr(a.shape,b.shape)){
       if(a.shape.includes(1) && a.shape.length == 2){
 
@@ -992,25 +992,11 @@ class Matrix{
   static vecTransform(transMatrix,a){
     return Matrix.matMul(transMatrix,a);
   }
-  static trace(a,b){
-    if(a.shape.length == 2 && sameArr(a.shape,b.shape)){
-      if(a.shape[0] == a.shape[1]){
-        let tempMat = mat_identity(this.shape);
-        return Matrix.innerProduct(a,b);
-      }else{
-        console.error("Matricies must be square!");
-        return false;
-      }
-    }else{
-      console.error("Matricies must be two dimensional and the same shape!");
-      return false;
-    }
-  }
   trace(){
     if(this.shape.length == 2){
       if(this.shape[0] == this.shape[1]){
         let tempMat = mat_identity(this.shape);
-        return this.innerProduct(tempMat);
+        return Matrix.innerProduct(this,tempMat);
       }else{
         console.error("Matrix must be square!");
         return false;
