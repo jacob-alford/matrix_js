@@ -555,7 +555,7 @@ class Matrix{
     else if(fn == "both") return [[b0,b1],x => x*b1+b0];
     else return [b0,b1];
   }
-  static reg(a,b,degree=1,fn=false){
+  static reg(a,b,degree=1){
     if(sameArr(a.shape,b.shape)){
       if(a.shape.includes(1) && a.shape.length == 2){
 
