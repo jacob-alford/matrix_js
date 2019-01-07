@@ -543,6 +543,8 @@ $(document).ready(function(){
           display("Sequential requires begin and end specified in box formatted as follows: 'begin,end'.");
           return false;
         }
+      }else if($("#tempSel").val() == "Equal Weight Probability"){
+        tempMat = mat_fixed(shape,1/(shape[0]*shape[1]));
       }
     }else{
 
@@ -581,7 +583,7 @@ $(document).ready(function(){
       }else{
         let shape = [Number($("#rows").val()),Number($("#cols").val())];
         if(shape[0] != currentMat.shape[0] || shape[1] != currentMat.shape[1]){
-         shape = currentMat.shape; 
+         shape = currentMat.shape;
         }
         tempMat = new Matrix(temp,shape);
       }
