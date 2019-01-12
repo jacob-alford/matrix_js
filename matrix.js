@@ -931,86 +931,28 @@ class Matrix{
     }
   }
   static matMul(a,b){
-    if(!(a.shape.includes(1) && b.shape.includes(1))){
-      if(a.shape.includes(1) || b.shape.includes(1)){ // If there's a vector
-          if(a.shape.includes(1)){
-            console.error("Matrix transformations require the transformation matrix called first!");
-            return false;
-          }else{
-            if(b.shape[0] != a.shape[0] && b.shape[1] == a.shape[0]){ // If b rows don't match a rows &&&&&& b columns match a rows
-              console.log("Note: vector transposed to be a column vector!");
-              Matrix.transpose(b);
-            }else if(b.shape[1] != a.shape[0] && b.shape[0] != a.shape[0]){
-              //console.error("Matrix and vector parameters must match for matrix transformations!");
-              //return false;
-            }
-          }
-      }
-      if(a.shape.length == 2 && b.shape.length == 2){
-        if(a.shape[0] == b.shape[1] || a.shape[1] == b.shape[0]){
-          let tempA;
-          let tempB;
-          if(a.shape[0] == b.shape[1] && a.shape[1] == b.shape[0]){ // shapes are transposes
-            if(a.shape[0] > a.shape[1]){
-              tempA = a.shape[0];
-              tempB = b.shape[1];
-            }else{
-              tempA = a.shape[1];
-              tempB = b.shape[0];
-            }
-          }else{
-            if(a.shape[0] == b.shape[1]){
-              tempA = a.shape[0];
-              tempB = b.shape[1];
-            }else if(a.shape[1] == b.shape[0]){
-              tempA = a.shape[1];
-              tempB = b.shape[0];
-            }
-          }
-          let aShape = a.shape[1-a.shape.indexOf(tempA)];
-          let bShape = b.shape[1-b.shape.indexOf(tempB)];
-          let outArr = [];
-          for(let aI=0;aI<aShape;aI++){
-            for(let bI=0;bI<bShape;bI++){
-              outArr.push(a.getRow(aI).innerProduct(b.getCol(bI)));
-            }
-          }
-          return new Matrix(outArr,[aShape,bShape]);
-        }else{
-          console.error("Matricies must match in outer dimensions!");
-          return false;
+    if(a.shape[1] == b.shape[0]){
+      let newShape = [a.shape[0],b.shape[1]];
+      let newData = [];
+      for(let i=0;i<a.shape[0];i++){
+        for(let j=0;j<b.shape[1];j++){
+          newData.push(Matrix.innerProduct(a.getRow(i),b.getCol(j)));
         }
-      }else{
-        console.error("Matricies must be two dimensional!");
-        return false;
       }
+      return new Matrix(newData,newShape);
     }else{
-      console.error("Matrix multiplication between two vectors not defined!");
+      console.error("Matricies don't match in inner dimensions!");
       return false;
     }
   }
   static vecTransform(transMatrix,a){
     return Matrix.matMul(transMatrix,a);
   }
-  static trace(a,b){
-    if(a.shape.length == 2 && sameArr(a.shape,b.shape)){
-      if(a.shape[0] == a.shape[1]){
-        let tempMat = mat_identity(this.shape);
-        return Matrix.innerProduct(a,b);
-      }else{
-        console.error("Matricies must be square!");
-        return false;
-      }
-    }else{
-      console.error("Matricies must be two dimensional and the same shape!");
-      return false;
-    }
-  }
   trace(){
     if(this.shape.length == 2){
       if(this.shape[0] == this.shape[1]){
         let tempMat = mat_identity(this.shape);
-        return this.innerProduct(tempMat);
+        return Matrix.innerProduct(this,tempMat);
       }else{
         console.error("Matrix must be square!");
         return false;
@@ -1246,6 +1188,10 @@ const isAMatrix = a => {
   if(!(a.shape === undefined) && !(a.data === undefined) && !(a.plain === undefined)) return true;
   else return false;
 }
+const isAVector = a => {
+  if(typeof a.dot === "undefined") return false;
+  else return true;
+}
 const flattenArr = (arr,shape) => {
   let outArr = [];
     if(shape.length == 1){
@@ -1352,9 +1298,13 @@ const arr_fixed = (n,val) => {
 }
 const mat_fixed = (shape,val) => new Matrix(arr_fixed(shape.reduce((a,c) => a=a*c),val),shape);
 
-const arr_rand = (n,min=0,max=1) => {
+const arr_rand = (n,min=0,max=1,fixed = false) => {
   let outputArr = [];
-  for(let c=0;c<n;c++) outputArr.push(Math.random()*max + min);
+  if(fixed){
+    for(let c=0;c<n;c++) outputArr.push(Math.floor(Math.random()*max + min));
+  }else{
+    for(let c=0;c<n;c++) outputArr.push(Math.random()*max + min);
+  }
   return outputArr;
 }
-const mat_rand = (shape,min=0,max=1) => new Matrix(arr_rand(shape.reduce((a,c) => a=a*c),min,max),shape);
+const mat_rand = (shape,min=0,max=1,fixed=false) => new Matrix(arr_rand(shape.reduce((a,c) => a=a*c),min,max,fixed),shape);
